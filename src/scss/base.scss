@@ -1,0 +1,15 @@
+$bg-color: red;
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: $bg-color;
+}
+
+.table-class {
+  width: 100px;
+  height: 100px;
+}
