@@ -16,7 +16,25 @@ export default class Dashboard {
                 dashboard.append(header.createElement());
                 const dataCountry = new DataCountry();
                 const countryTable = dataCountry.createdataCountryTable();
-                const tableDataCountries = new TableDataCountries(dataService, dataCountry);
+
+                const checkbox100 = createElement('input');
+                checkbox100.setAttribute('type', 'checkbox');
+
+                const checkboxNew = createElement('input');
+                checkboxNew.setAttribute('type', 'checkbox');
+
+                const tableDataCountries = new TableDataCountries(
+                    dataService,
+                    dataCountry,
+                    checkbox100.checked,
+                    checkboxNew.checked,
+                );
+
+                checkbox100.addEventListener('click', () => tableDataCountries.check100(checkbox100.checked));
+                checkboxNew.addEventListener('click', () => tableDataCountries.checkNew(checkboxNew.checked));
+
+                dashboard.append(checkbox100);
+                dashboard.append(checkboxNew);
                 dashboard.append(tableDataCountries.createTable());
                 dashboard.append(countryTable);
             } catch (error) {
