@@ -7,9 +7,13 @@ $bg-color: white;
 
 body {
   background: $bg-color;
+  display: flex;
+  flex-direction: row-reverse;
 }
 
-.table-class {
-  width: 100px;
-  height: 100px;
+.dataCountry {
+  margin: 0 auto;
+  width: 200px;
+  height: 200px;
+  background-color: red;
 }
