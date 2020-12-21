@@ -17,6 +17,7 @@ export default class MainTable {
 
     createTable() {
         this.tableCountries = document.createElement('table');
+        this.tableCountries.classList.add('mainTable');
         this.createRows();
         return this.tableCountries;
     }

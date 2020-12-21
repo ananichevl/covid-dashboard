@@ -30,9 +30,11 @@ export default class CountryTable {
             const rowTotal = this.tableCountriesTotalCases.insertRow(i);
             rowTotal.addEventListener('click', () => this.tableCountries.showCountryInfo(totalCountriesList[i]));
             const tableHeaderTotal = this.tableCountriesTotalCases.createTHead();
-            tableHeaderTotal.innerHTML = 'Total Cases';
+            tableHeaderTotal.innerHTML = 'Confirmed Cases by Country';
             const cellCountryTotal = rowTotal.insertCell(0);
+            cellCountryTotal.classList.add('countryName');
             const cellTotalCountriesCases = rowTotal.insertCell(1);
+            cellTotalCountriesCases.classList.add('countryInfo');
             cellCountryTotal.innerHTML = totalCountriesList[i].Country;
             cellTotalCountriesCases.innerHTML = totalCountriesList[i].TotalConfirmed;
         }
