@@ -4,6 +4,14 @@ import 'leaflet/dist/leaflet.css';
 const L = require('leaflet');
 
 export default class Map {
+    map;
+
+    selectCountry;
+
+    constructor(dashboard, selectCountry) {
+        this.selectCountry = selectCountry.bind(dashboard);
+    }
+
     static createElement() {
         const map = createElement('div');
         map.classList.add('map');
@@ -12,8 +20,8 @@ export default class Map {
         return map;
     }
 
-    static initializeMap(countries) {
-        const mymap = L.map('mapid')
+    initializeMap(countries) {
+        this.map = L.map('mapid')
             .setView({
                 lon: 0,
                 lat: 0,
@@ -27,17 +35,48 @@ export default class Map {
             zoomOffset: -1,
             accessToken: 'pk.eyJ1IjoiYW5hbmljaGV2bCIsImEiOiJja2l4NGNkY2gwenQzMnptZWltc2Q5OW1xIn0.BxrkdOMCyU8-7TZL8zwpGg',
         })
-            .addTo(mymap);
+            .addTo(this.map);
 
         countries.forEach((c) => {
-            L.circle([c.latitude, c.longitude], {
+            const marker = L.circle([c.latitude, c.longitude], {
                 color: '#0E83C4',
                 fillColor: '#0E83C4',
                 fillOpacity: 0.85,
-                radius: this.getRadius(c.TotalConfirmed),
+                radius: Map.getRadius(c.TotalConfirmed),
             })
-                .addTo(mymap);
+                .addTo(this.map);
+
+            const content = createElement('div');
+
+            const contentTitle = createElement('div');
+            contentTitle.innerText = c.Country;
+            const contentConfirmed = createElement('div');
+            contentConfirmed.innerText = `Confirmed: ${c.TotalConfirmed}`;
+            const contentDeaths = createElement('div');
+            contentDeaths.innerText = `Deaths: ${c.TotalDeaths}`;
+            const contentRecovered = createElement('div');
+            contentRecovered.innerText = `Recovered: ${c.TotalRecovered}`;
+
+            content.append(contentTitle);
+            content.append(contentConfirmed);
+            content.append(contentDeaths);
+            content.append(contentRecovered);
+
+            marker.bindPopup(content);
+
+            marker.on('mouseover', () => marker.openPopup());
+            marker.on('mouseout', () => marker.closePopup());
+            marker.on('click', () => this.selectCountry(c));
         });
+
+        return this.map;
+    }
+
+    showCountry(country) {
+        this.map.setView({
+            lon: country.longitude,
+            lat: country.latitude,
+        }, 5);
     }
 
     static getRadius(cases) {
