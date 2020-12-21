@@ -9,24 +9,29 @@ export default class MainTable {
 
     tableCountries;
 
-    constructor(dataService, isChecked100, isCheckedNew) {
+    tableBody;
+
+    selectCountry;
+
+    constructor(dataService, isChecked100, isCheckedNew, dashboard, selectCountry) {
         this.dataService = dataService;
         this.isChecked100 = isChecked100;
         this.isCheckedNew = isCheckedNew;
+        this.selectCountry = selectCountry.bind(dashboard);
     }
 
-    createTable() {
+    createElement() {
         this.tableCountries = document.createElement('table');
         this.tableCountries.classList.add('mainTable');
-        this.createRows();
+        this.createTable();
         return this.tableCountries;
     }
 
-    createRows() {
+    createTable() {
         this.tableCountries.innerHTML = '';
-        const countriesList = this.dataService.getCountriesList();
 
         const tableHeader = this.tableCountries.createTHead();
+        this.tableBody = this.tableCountries.createTBody();
 
         const headerRow = tableHeader.insertRow();
         const totalCasesHeader = createElement('th');
@@ -39,9 +44,15 @@ export default class MainTable {
         headerRow.append(totalCasesHeader);
         headerRow.append(totalDeathsHeader);
         headerRow.append(totalRecoveredHeader);
-        tableHeader.append(headerRow);
+
+        this.createRows();
+    }
+
+    createRows() {
+        const countriesList = this.dataService.getCountriesList();
         for (let i = 0; i < countriesList.length; i += 1) {
-            const row = this.tableCountries.insertRow(i + 1);
+            const row = this.tableBody.insertRow(i);
+            row.addEventListener('click', () => this.selectCountry(countriesList[i]));
 
             const cellCountry = row.insertCell(0);
             const cellTotalCases = row.insertCell(1);
@@ -81,24 +92,35 @@ export default class MainTable {
         this.createRows();
     }
 
-    showCountryInfo(country) {
-        console.log(this);
-        this.tableCountries.innerHTML = '';
-        const countryName = createElement('div');
-        countryName.append(country.Country);
+    showRow(country) {
+        this.tableBody.innerHTML = '';
+        const row = this.tableBody.insertRow();
+        row.addEventListener('click', () => this.selectCountry(country));
 
-        const totalCases = createElement('div');
-        totalCases.append(country.TotalConfirmed);
+        const cellCountry = row.insertCell(0);
+        const cellTotalCases = row.insertCell(1);
+        const cellTotalDeaths = row.insertCell(2);
+        const cellTotalRecovered = row.insertCell(3);
+        cellCountry.innerHTML = country.Country;
 
-        const totalDeaths = createElement('div');
-        totalDeaths.append(country.TotalDeaths);
-
-        const totalRecovered = createElement('div');
-        totalRecovered.append(country.TotalRecovered);
-
-        this.tableCountries.append(countryName);
-        this.tableCountries.append(totalCases);
-        this.tableCountries.append(totalDeaths);
-        this.tableCountries.append(totalRecovered);
+        if (this.isCheckedNew) {
+            if (this.isChecked100) {
+                cellTotalCases.innerHTML = country.TotalConfirmedNew100;
+                cellTotalRecovered.innerHTML = country.TotalRecoveredNew100;
+                cellTotalDeaths.innerHTML = country.TotalDeathsNew100;
+            } else {
+                cellTotalCases.innerHTML = country.NewConfirmed;
+                cellTotalRecovered.innerHTML = country.NewRecovered;
+                cellTotalDeaths.innerHTML = country.NewDeaths;
+            }
+        } else if (this.isChecked100) {
+            cellTotalCases.innerHTML = country.TotalConfirmed100;
+            cellTotalRecovered.innerHTML = country.TotalRecovered100;
+            cellTotalDeaths.innerHTML = country.TotalDeaths100;
+        } else {
+            cellTotalCases.innerHTML = country.TotalConfirmed;
+            cellTotalRecovered.innerHTML = country.TotalRecovered;
+            cellTotalDeaths.innerHTML = country.TotalDeaths;
+        }
     }
 }

@@ -36,9 +36,7 @@ export default class DataService {
             const countryInfo = countries.find((c) => c.alpha2Code === country.CountryCode);
             let countryGeo = n.search(country.CountryCode)[0];
             if (!countryGeo) {
-                console.log(country);
                 countryGeo = countriesGeo[country.CountryCode.toLowerCase()];
-                console.log(countryGeo);
                 countryGeo = {
                     geo: {
                         latitude: countryGeo[0],
@@ -63,6 +61,7 @@ export default class DataService {
                     .toFixed(2),
                 latitude: countryGeo.geo.latitude,
                 longitude: countryGeo.geo.longitude,
+                flag: countryInfo.flag,
             };
         });
     }

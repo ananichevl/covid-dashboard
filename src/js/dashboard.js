@@ -7,7 +7,15 @@ import CountryDate from './countryDate';
 import Map from './map';
 
 export default class Dashboard {
-    static createElement() {
+    country;
+
+    mainTable;
+
+    countryTable;
+
+    map;
+
+    createElement() {
         const dashboardWrapper = createElement('div');
         dashboardWrapper.classList.add('dashboard-wrapper');
 
@@ -39,21 +47,26 @@ export default class Dashboard {
                 const checkboxNew = createElement('input');
                 checkboxNew.setAttribute('type', 'checkbox');
 
-                const mainTable = new MainTable(
+                this.mainTable = new MainTable(
                     dataService,
                     checkbox100.checked,
                     checkboxNew.checked,
+                    this,
+                    this.selectCountry,
                 );
 
-                const countryTable = new CountryTable(
+                this.countryTable = new CountryTable(
                     dataService,
                     checkbox100.checked,
                     checkboxNew.checked,
-                    mainTable,
+                    this,
+                    this.selectCountry,
                 );
 
-                checkbox100.addEventListener('click', () => mainTable.check100(checkbox100.checked));
-                checkboxNew.addEventListener('click', () => mainTable.checkNew(checkboxNew.checked));
+                this.map = new Map(this, this.selectCountry);
+
+                checkbox100.addEventListener('click', () => this.mainTable.check100(checkbox100.checked));
+                checkboxNew.addEventListener('click', () => this.mainTable.checkNew(checkboxNew.checked));
 
                 const dashboardMain = createElement('div');
                 dashboardMain.classList.add('dashboard-main');
@@ -78,7 +91,7 @@ export default class Dashboard {
                 const dashboardMainTable = createElement('div');
                 dashboardMainTable.classList.add('dashboard-main__table');
 
-                dashboardMainTable.append(mainTable.createTable());
+                dashboardMainTable.append(this.mainTable.createElement());
 
                 dashboardMain.append(dasboardMainInfo);
                 dashboardMain.append(dashboardMainTable);
@@ -92,7 +105,7 @@ export default class Dashboard {
 
                 const dashboardCountryTable = createElement('div');
                 dashboardCountryTable.classList.add('dashboard-country__table');
-                dashboardCountryTable.append(countryTable.createElement());
+                dashboardCountryTable.append(this.countryTable.createElement());
 
                 dashboardCountry.append(countryDate.createElement());
                 dashboardCountry.append(dashboardCountryTable);
@@ -100,7 +113,7 @@ export default class Dashboard {
                 dashboard.append(dashboardMain);
                 dashboard.append(dashboardCountry);
 
-                Map.initializeMap(dataService.getCountriesList());
+                this.map.initializeMap(dataService.getCountriesList());
             } catch (error) {
                 console.log(error);
             }
@@ -110,5 +123,19 @@ export default class Dashboard {
         dashboardWrapper.append(dashboard);
 
         return dashboardWrapper;
+    }
+
+    selectCountry(country) {
+        if (country === this.country) {
+            this.country = null;
+            this.mainTable.createRows();
+            this.countryTable.createRows();
+            this.map.showCountry(country);
+        } else {
+            this.country = country;
+            this.mainTable.showRow(this.country);
+            this.countryTable.showRow(this.country);
+            this.map.showCountry(this.country);
+        }
     }
 }
