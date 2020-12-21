@@ -1,3 +1,5 @@
+const population = require('../assets/population.json');
+
 export default class CountryService {
     url;
 
@@ -6,13 +8,16 @@ export default class CountryService {
     }
 
     async getAll() {
-        try {
-            const response = await fetch(this.url);
-            const result = await response.json();
+        let response;
+        let result;
 
-            return result;
+        try {
+            response = await fetch(this.url);
+            result = await response.json();
         } catch (error) {
-            throw new Error('Cannot get data');
+            result = population;
         }
+
+        return result;
     }
 }

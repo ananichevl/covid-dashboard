@@ -39,6 +39,7 @@ export default class Header {
         header.append(amountDeathsPerDay);
         header.append(amountRecoveredPerDay);
 
+        header.style = 'display:none';
         return header;
     }
 }

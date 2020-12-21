@@ -1,21 +1,37 @@
 import createElement from './domElementFactory';
 import DataService from './data';
-import Header from './header';
-import TableDataCountries from './tableDataCountries';
-import DataCountry from './dataCountry';
+import MainTable from './mainTable';
+import MainGlobal from './mainGlobal';
+import CountryTable from './countryTable';
+import CountryDate from './countryDate';
+import Map from './map';
 
 export default class Dashboard {
     static createElement() {
+        const dashboardWrapper = createElement('div');
+        dashboardWrapper.classList.add('dashboard-wrapper');
+
+        const dashboardHeader = createElement('div');
+        dashboardHeader.classList.add('dashboard-header');
+
+        const dashboardHeaderTitle = createElement('div');
+        dashboardHeaderTitle.classList.add('dashboard-header__title');
+        dashboardHeaderTitle.innerText = 'COVID-19 Dashboard'.toUpperCase();
+
+        const dashboardHeaderSearch = createElement('div');
+        dashboardHeaderSearch.classList.add('dashboard-header__search');
+
+        dashboardHeader.append(dashboardHeaderTitle);
+        dashboardHeader.append(dashboardHeaderSearch);
+
         const dashboard = createElement('div');
+        dashboard.classList.add('dashboard');
+
+        const dataService = new DataService('https://api.covid19api.com/summary');
 
         (async () => {
-            const dataService = new DataService('https://api.covid19api.com/summary');
             try {
                 await dataService.getContent();
-                const header = new Header(dataService);
-                dashboard.append(header.createElement());
-                const dataCountry = new DataCountry();
-                const countryTable = dataCountry.createdataCountryTable();
 
                 const checkbox100 = createElement('input');
                 checkbox100.setAttribute('type', 'checkbox');
@@ -23,24 +39,76 @@ export default class Dashboard {
                 const checkboxNew = createElement('input');
                 checkboxNew.setAttribute('type', 'checkbox');
 
-                const tableDataCountries = new TableDataCountries(
+                const mainTable = new MainTable(
                     dataService,
-                    dataCountry,
                     checkbox100.checked,
                     checkboxNew.checked,
                 );
 
-                checkbox100.addEventListener('click', () => tableDataCountries.check100(checkbox100.checked));
-                checkboxNew.addEventListener('click', () => tableDataCountries.checkNew(checkboxNew.checked));
+                const countryTable = new CountryTable(
+                    dataService,
+                    checkbox100.checked,
+                    checkboxNew.checked,
+                    mainTable,
+                );
 
-                dashboard.append(checkbox100);
-                dashboard.append(checkboxNew);
-                dashboard.append(tableDataCountries.createTable());
-                dashboard.append(countryTable);
+                checkbox100.addEventListener('click', () => mainTable.check100(checkbox100.checked));
+                checkboxNew.addEventListener('click', () => mainTable.checkNew(checkboxNew.checked));
+
+                const dashboardMain = createElement('div');
+                dashboardMain.classList.add('dashboard-main');
+
+                const dasboardMainInfo = createElement('div');
+                dasboardMainInfo.classList.add('dashboard-main__info');
+
+                const main = createElement('div');
+                main.classList.add('main');
+
+                const mainGraph = createElement('div');
+                mainGraph.classList.add('main__graph');
+
+                const mainGlobal = new MainGlobal(dataService.getTotalCases());
+
+                main.append(mainGlobal.createElement());
+                main.append(mainGraph);
+
+                dasboardMainInfo.append(main);
+                dasboardMainInfo.append(Map.createElement());
+
+                const dashboardMainTable = createElement('div');
+                dashboardMainTable.classList.add('dashboard-main__table');
+
+                dashboardMainTable.append(mainTable.createTable());
+
+                dashboardMain.append(dasboardMainInfo);
+                dashboardMain.append(dashboardMainTable);
+                dashboardMain.append(checkbox100);
+                dashboardMain.append(checkboxNew);
+
+                const dashboardCountry = createElement('div');
+                dashboardCountry.classList.add('dashboard-country');
+
+                const countryDate = new CountryDate(dataService.getDate());
+
+                const dashboardCountryTable = createElement('div');
+                dashboardCountryTable.classList.add('dashboard-country__table');
+                dashboardCountryTable.append(countryTable.createElement());
+
+                dashboardCountry.append(countryDate.createElement());
+                dashboardCountry.append(dashboardCountryTable);
+
+                dashboard.append(dashboardMain);
+                dashboard.append(dashboardCountry);
+
+                Map.initializeMap(dataService.getCountriesList());
             } catch (error) {
                 console.log(error);
             }
         })();
-        return dashboard;
+
+        dashboardWrapper.append(dashboardHeader);
+        dashboardWrapper.append(dashboard);
+
+        return dashboardWrapper;
     }
 }

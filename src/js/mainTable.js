@@ -1,7 +1,7 @@
-export default class TableDataCountries {
-    dataService;
+import createElement from './domElementFactory';
 
-    dataCountry;
+export default class MainTable {
+    dataService;
 
     isChecked100;
 
@@ -9,9 +9,8 @@ export default class TableDataCountries {
 
     tableCountries;
 
-    constructor(dataService, dataCountry, isChecked100, isCheckedNew) {
+    constructor(dataService, isChecked100, isCheckedNew) {
         this.dataService = dataService;
-        this.dataCountry = dataCountry;
         this.isChecked100 = isChecked100;
         this.isCheckedNew = isCheckedNew;
     }
@@ -25,11 +24,24 @@ export default class TableDataCountries {
     createRows() {
         this.tableCountries.innerHTML = '';
         const countriesList = this.dataService.getCountriesList();
+
+        const tableHeader = this.tableCountries.createTHead();
+
+        const headerRow = tableHeader.insertRow();
+        const totalCasesHeader = createElement('th');
+        totalCasesHeader.innerText = 'Total Cases';
+        const totalDeathsHeader = createElement('th');
+        totalDeathsHeader.innerText = 'Total Deaths';
+        const totalRecoveredHeader = createElement('th');
+        totalRecoveredHeader.innerText = 'Total Recovered';
+
+        headerRow.append(totalCasesHeader);
+        headerRow.append(totalDeathsHeader);
+        headerRow.append(totalRecoveredHeader);
+        tableHeader.append(headerRow);
         for (let i = 0; i < countriesList.length; i += 1) {
-            const row = this.tableCountries.insertRow(i);
-            row.addEventListener('click', () => this.dataCountry.showCountryInfo(countriesList[i]));
-            const tableHeader = this.tableCountries.createTHead();
-            tableHeader.innerHTML = 'Total Cases';
+            const row = this.tableCountries.insertRow(i + 1);
+
             const cellCountry = row.insertCell(0);
             const cellTotalCases = row.insertCell(1);
             const cellTotalDeaths = row.insertCell(2);
@@ -66,5 +78,26 @@ export default class TableDataCountries {
     checkNew(isCheckedNew) {
         this.isCheckedNew = isCheckedNew;
         this.createRows();
+    }
+
+    showCountryInfo(country) {
+        console.log(this);
+        this.tableCountries.innerHTML = '';
+        const countryName = createElement('div');
+        countryName.append(country.Country);
+
+        const totalCases = createElement('div');
+        totalCases.append(country.TotalConfirmed);
+
+        const totalDeaths = createElement('div');
+        totalDeaths.append(country.TotalDeaths);
+
+        const totalRecovered = createElement('div');
+        totalRecovered.append(country.TotalRecovered);
+
+        this.tableCountries.append(countryName);
+        this.tableCountries.append(totalCases);
+        this.tableCountries.append(totalDeaths);
+        this.tableCountries.append(totalRecovered);
     }
 }

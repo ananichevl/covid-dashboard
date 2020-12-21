@@ -1,4 +1,67 @@
-$bg-color: white;
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+
+$bg-color: #191932;
+$bg-block-color: #000000;
+$bg-cases-color: -webkit-linear-gradient(270.15deg, #7D40FF 19.44%, #02A4FF 81.9%);
+$bg-country-color: -webkit-linear-gradient(270deg, #4DFFDF 0%, #4DA1FF 96.35%);
+$recovered-title-color: #97E200;
+$recovered-color: #70A800;
+$country-color: #D6D6D6;
+
+@mixin h1 {
+  font: {
+    family: Lato;
+    style: normal;
+    weight: bold;
+    size: 46px;
+  }
+  line-height: 55px;
+}
+
+@mixin h2 {
+  font: {
+    family: Lato;
+    style: normal;
+    weight: bold;
+    size: 32px;
+  }
+  line-height: 38px;
+}
+
+@mixin h3 {
+  font: {
+    family: Lato;
+    style: normal;
+    weight: 700;
+    size: 30px;
+  }
+  line-height: 36px;
+}
+
+@mixin h4 {
+  font: {
+    family: Lato;
+    style: normal;
+    weight: normal;
+    size: 20px;
+  }
+  line-height: 24px;
+}
+
+@mixin h5 {
+  font: {
+    family: Lato;
+    style: normal;
+    weight: normal;
+    size: 16px;
+  }
+  line-height: 19px;
+}
+
+@mixin h5-bold {
+  @include h5;
+  font-weight: bold;
+}
 
 * {
   margin: 0;
@@ -7,11 +70,137 @@ $bg-color: white;
 
 body {
   background: $bg-color;
+  color: white;
+}
+
+table {
+}
+
+.dashboard-wrapper {
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: column;
+  width: 1024px;
+  height: 100vh;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  height: 56px;
+
+  &__title {
+    @include h2;
+  }
+
+  &__search {
+    width: 299px;
+    height: 56px;
+    background: $bg-block-color;
+  }
+}
+
+.dashboard {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 14px;
+
+  .dashboard-main {
+    width: 655px;
+    height: 656px;
+
+    &__info {
+      display: flex;
+      justify-content: space-between;
+
+      .main {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+
+        &__global {
+          text-align: center;
+          padding: 11px 16px 13px 16px;
+
+          background: $bg-block-color;
+
+          span {
+            display: block;
+          }
+
+          .title {
+            @include h4;
+          }
+
+          .global-text {
+            @include h1;
+
+            background: $bg-cases-color;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+          }
+        }
+
+        &__graph {
+          width: 268px;
+          height: 213px;
+          background: $bg-block-color;
+        }
+      }
+
+      .map {
+        width: 368px;
+        height: 333px;
+        background: $bg-block-color;
+      }
+    }
+
+    &__table {
+      width: 654px;
+      height: 300px;
+      margin-top: 3px;
+      overflow: auto;
+      background: $bg-block-color;
+    }
+  }
+
+  .dashboard-country {
+    width: 310px;
+    height: 658px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    &__date {
+      text-align: center;
+      padding: 6px 62px 7px 31px;
+      background: $bg-block-color;
+
+      span {
+        display: block;
+      }
+
+      .title {
+        @include h5;
+      }
+
+      .date-text {
+        @include h5-bold;
+      }
+    }
+
+    &__table {
+      width: 309px;
+      height: 581px;
+      overflow: auto;
+      background: $bg-block-color;
+    }
+  }
 }
 
 .dataCountry {
+  display: none;
   margin: 0 auto;
   width: 200px;
   height: 200px;
