@@ -4,6 +4,7 @@ $bg-color: #191932;
 $bg-block-color: #000000;
 $bg-cases-color: -webkit-linear-gradient(270.15deg, #7D40FF 19.44%, #02A4FF 81.9%);
 $bg-country-color: -webkit-linear-gradient(270deg, #4DFFDF 0%, #4DA1FF 96.35%);
+$bg-recovered-color: -webkit-linear-gradient(91.53deg, #97E200 0.8%, #12E200 107.15%);
 $recovered-title-color: #97E200;
 $recovered-color: #70A800;
 $country-color: #D6D6D6;
@@ -73,9 +74,6 @@ body {
   color: white;
 }
 
-table {
-}
-
 .dashboard-wrapper {
   display: flex;
   flex-direction: column;
@@ -95,7 +93,7 @@ table {
   }
 
   &__search {
-    width: 299px;
+    width: 309px;
     height: 56px;
     background: $bg-block-color;
 
@@ -176,10 +174,35 @@ table {
     &__table {
       width: 654px;
       height: 300px;
-      margin-top: 3px;
+      margin-top: 25px;
       overflow: auto;
       background: $bg-block-color;
     }
+
+     .mainTable {
+      @include h5;
+     }
+
+     th:nth-child(1) {
+      @include h4;
+
+      background: $bg-cases-color;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+     }
+
+     th:nth-child(2) {
+      @include h4;
+     }
+
+     th:nth-child(3) {
+      @include h4;
+
+      background: $bg-recovered-color;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+     }
+
   }
 
   .dashboard-country {
@@ -211,17 +234,47 @@ table {
       width: 309px;
       height: 581px;
       overflow: auto;
+      font: {
+        family: Lato;
+        style: normal;
+        weight: normal;
+        size: 20px;
+      };
       background: $bg-block-color;
+      border-collapse: collapse;
+      
+      table {
+        border-spacing: 0;
+        padding: 10px;
+      }
+
+      thead {
+        @include h4;
+      }
+
+      tbody {
+        @include h5;
+      }
+
+      td.countryInfo  {
+        background: $bg-country-color;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        color: $bg-country-color;
+        height: 34px;
+        @include h5-bold;
+      }
+
+      tr {
+        border: 1px solid #5C5C5C;
+      }
     }
   }
 }
 
-.dataCountry {
-  display: none;
-  margin: 0 auto;
-  width: 200px;
-  height: 200px;
-  background-color: red;
+img {
+  width: 30px;
+  height: 15px;
 }
 
 .keyboard {
