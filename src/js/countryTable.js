@@ -47,12 +47,18 @@ export default class CountryTable {
     createRows() {
         this.tableBody.innerHTML = '';
         const totalCountriesList = this.dataService.getCountriesList();
+        console.log(totalCountriesList);
         for (let i = 0; i < totalCountriesList.length; i += 1) {
             const rowTotal = this.tableBody.insertRow(i);
             rowTotal.addEventListener('click', () => this.selectCountry(totalCountriesList[i]));
-            const cellCountryTotal = rowTotal.insertCell(0);
+            const countryFlag = rowTotal.insertCell(0);
+            countryFlag.classList.add('countryFlag');
+            const imageCountryFlag = document.createElement('img');
+            imageCountryFlag.setAttribute('src', totalCountriesList[i].flag);
+            countryFlag.append(imageCountryFlag);
+            const cellCountryTotal = rowTotal.insertCell(1);
             cellCountryTotal.classList.add('countryName');
-            const cellTotalCountriesCases = rowTotal.insertCell(1);
+            const cellTotalCountriesCases = rowTotal.insertCell(2);
             cellTotalCountriesCases.classList.add('countryInfo');
             cellCountryTotal.innerHTML = totalCountriesList[i].Country;
             cellTotalCountriesCases.innerHTML = totalCountriesList[i].TotalConfirmed;
@@ -63,8 +69,15 @@ export default class CountryTable {
         this.tableBody.innerHTML = '';
         const row = this.tableBody.insertRow();
         row.addEventListener('click', () => this.selectCountry(country));
-        const cellCountryTotal = row.insertCell(0);
-        const cellTotalCountriesCases = row.insertCell(1);
+        const countryFlag = row.insertCell(0);
+        countryFlag.classList.add('countryFlag');
+        const imageCountryFlag = document.createElement('img');
+        imageCountryFlag.setAttribute('src', country.flag);
+        countryFlag.append(imageCountryFlag);
+        const cellCountryTotal = row.insertCell(1);
+        cellCountryTotal.classList.add('countryName');
+        const cellTotalCountriesCases = row.insertCell(2);
+        cellTotalCountriesCases.classList.add('countryInfo');
         cellCountryTotal.innerHTML = country.Country;
         cellTotalCountriesCases.innerHTML = country.TotalConfirmed;
     }

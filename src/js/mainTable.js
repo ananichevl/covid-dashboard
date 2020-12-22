@@ -32,14 +32,31 @@ export default class MainTable {
 
         const tableHeader = this.tableCountries.createTHead();
         this.tableBody = this.tableCountries.createTBody();
-
         const headerRow = tableHeader.insertRow();
         const totalCasesHeader = createElement('th');
-        totalCasesHeader.innerText = 'Total Cases';
+        totalCasesHeader.classList.add('totalCasesHeader');
+        const headerCasesText = createElement('span');
+        headerCasesText.innerText = 'Total Cases';
+        totalCasesHeader.append(headerCasesText);
+        const headerCasesAmount = createElement('p');
+        headerCasesAmount.innerText = this.dataService.getTotalCases();
+        totalCasesHeader.append(headerCasesAmount);
         const totalDeathsHeader = createElement('th');
-        totalDeathsHeader.innerText = 'Total Deaths';
+        totalDeathsHeader.classList.add('totalDeathsHeader');
+        const headerDeathsText = createElement('span');
+        headerDeathsText.innerText = 'Total Deaths';
+        totalDeathsHeader.append(headerDeathsText);
+        const headerDeathsAmount = createElement('p');
+        headerDeathsAmount.innerText = this.dataService.getTotalDeaths();
+        totalDeathsHeader.append(headerDeathsAmount);
         const totalRecoveredHeader = createElement('th');
-        totalRecoveredHeader.innerText = 'Total Recovered';
+        totalRecoveredHeader.classList.add('totalRecoveredHeader');
+        const headerRecoveredText = createElement('span');
+        headerRecoveredText.innerText = 'Total Recovered';
+        totalRecoveredHeader.append(headerRecoveredText);
+        const headerRecoveredAmount = createElement('p');
+        headerRecoveredAmount.innerText = this.dataService.getTotalRecovered();
+        totalRecoveredHeader.append(headerRecoveredAmount);
 
         headerRow.append(totalCasesHeader);
         headerRow.append(totalDeathsHeader);
@@ -53,31 +70,38 @@ export default class MainTable {
         for (let i = 0; i < countriesList.length; i += 1) {
             const row = this.tableBody.insertRow(i);
             row.addEventListener('click', () => this.selectCountry(countriesList[i]));
-
-            const cellCountry = row.insertCell(0);
-            const cellTotalCases = row.insertCell(1);
-            const cellTotalDeaths = row.insertCell(2);
-            const cellTotalRecovered = row.insertCell(3);
+            const cellTotalCases = row.insertCell(0);
+            const cellTotalCasesAmount = createElement('p');
+            const cellCountry = createElement('span');
             cellCountry.innerHTML = countriesList[i].Country;
-
+            cellTotalCases.append(cellTotalCasesAmount);
+            cellTotalCases.append(cellCountry);
+            const cellTotalDeaths = row.insertCell(1);
+            const cellTotalDeathsAmount = createElement('p');
+            cellTotalDeaths.append(cellTotalDeathsAmount);
+            cellTotalDeaths.append(cellCountry);
+            const cellTotalRecovered = row.insertCell(2);
+            const cellTotalRecoveredAmount = createElement('p');
+            cellTotalRecovered.append(cellTotalRecoveredAmount);
+            cellTotalRecovered.append(cellCountry);
             if (this.isCheckedNew) {
                 if (this.isChecked100) {
-                    cellTotalCases.innerHTML = countriesList[i].TotalConfirmedNew100;
-                    cellTotalRecovered.innerHTML = countriesList[i].TotalRecoveredNew100;
-                    cellTotalDeaths.innerHTML = countriesList[i].TotalDeathsNew100;
+                    cellTotalCasesAmount.innerHTML = countriesList[i].TotalConfirmedNew100;
+                    cellTotalRecoveredAmount.innerHTML = countriesList[i].TotalRecoveredNew100;
+                    cellTotalDeathsAmount.innerHTML = countriesList[i].TotalDeathsNew100;
                 } else {
-                    cellTotalCases.innerHTML = countriesList[i].NewConfirmed;
-                    cellTotalRecovered.innerHTML = countriesList[i].NewRecovered;
-                    cellTotalDeaths.innerHTML = countriesList[i].NewDeaths;
+                    cellTotalCasesAmount.innerHTML = countriesList[i].NewConfirmed;
+                    cellTotalRecoveredAmount.innerHTML = countriesList[i].NewRecovered;
+                    cellTotalDeathsAmount.innerHTML = countriesList[i].NewDeaths;
                 }
             } else if (this.isChecked100) {
-                cellTotalCases.innerHTML = countriesList[i].TotalConfirmed100;
-                cellTotalRecovered.innerHTML = countriesList[i].TotalRecovered100;
-                cellTotalDeaths.innerHTML = countriesList[i].TotalDeaths100;
+                cellTotalCasesAmount.innerHTML = countriesList[i].TotalConfirmed100;
+                cellTotalRecoveredAmount.innerHTML = countriesList[i].TotalRecovered100;
+                cellTotalDeathsAmount.innerHTML = countriesList[i].TotalDeaths100;
             } else {
-                cellTotalCases.innerHTML = countriesList[i].TotalConfirmed;
-                cellTotalRecovered.innerHTML = countriesList[i].TotalRecovered;
-                cellTotalDeaths.innerHTML = countriesList[i].TotalDeaths;
+                cellTotalCasesAmount.innerHTML = countriesList[i].TotalConfirmed;
+                cellTotalRecoveredAmount.innerHTML = countriesList[i].TotalRecovered;
+                cellTotalDeathsAmount.innerHTML = countriesList[i].TotalDeaths;
             }
         }
     }
@@ -97,11 +121,11 @@ export default class MainTable {
         const row = this.tableBody.insertRow();
         row.addEventListener('click', () => this.selectCountry(country));
 
-        const cellCountry = row.insertCell(0);
-        const cellTotalCases = row.insertCell(1);
-        const cellTotalDeaths = row.insertCell(2);
-        const cellTotalRecovered = row.insertCell(3);
-        cellCountry.innerHTML = country.Country;
+        // const cellCountry = row.insertCell(0);
+        const cellTotalCases = row.insertCell(0);
+        const cellTotalDeaths = row.insertCell(1);
+        const cellTotalRecovered = row.insertCell(2);
+        // cellCountry.innerHTML = country.Country;
 
         if (this.isCheckedNew) {
             if (this.isChecked100) {

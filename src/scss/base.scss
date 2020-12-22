@@ -166,15 +166,19 @@ body {
       @include h5;
      }
 
-     th:first-of-type {
+     th:nth-child(1) {
       @include h4;
-      
+
       background: $bg-cases-color;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
      }
 
-     th:last-of-type {
+     th:nth-child(2) {
+      @include h4;
+     }
+
+     th:nth-child(3) {
       @include h4;
 
       background: $bg-recovered-color;
@@ -249,4 +253,9 @@ body {
       }
     }
   }
+}
+
+img {
+  width: 30px;
+  height: 15px;
 }
