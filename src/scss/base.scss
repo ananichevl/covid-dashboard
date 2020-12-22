@@ -98,6 +98,23 @@ table {
     width: 299px;
     height: 56px;
     background: $bg-block-color;
+
+    .search-list {
+      position: relative;
+      max-height: 261px;
+      z-index: 2;
+      background: #FFFFFF;
+
+      overflow: auto;
+    }
+
+    ul {
+      list-style-type: none;
+
+      li {
+        color: #2493F2;
+      }
+    }
   }
 }
 
@@ -205,4 +222,114 @@ table {
   width: 200px;
   height: 200px;
   background-color: red;
+}
+
+.keyboard {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  padding: 5px 0;
+  background-color: #fee2f8;
+  background-image: linear-gradient(315deg, #fee2f8 0%, #dcf8ef 74%);
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+  user-select: none;
+  transition: bottom 0.4s;
+}
+
+.keyboard--hidden {
+  bottom: -100%;
+}
+
+.keyboard__keys {
+  text-align: center;
+}
+
+.keyboard__key {
+  margin: .65em .45em;
+  cursor: pointer;
+  display: inline-block;
+  font: normal 1.4em sans-serif;
+  color: #444;
+  text-shadow: 0 0 2px grey;
+  width: .4em;
+  height: .4em;
+  padding: 0.3vh 0.4vw 2.8vh 1vw;
+  background: radial-gradient(circle at 60% 80%, white 40%, #bbb);
+  border-radius: .2em;
+  position: relative;
+  box-shadow: 0 0 .5em #ddd;
+  vertical-align: top;
+}
+
+.keyboard__key::before {
+  pointer-events: none;
+  content: "";
+  position: absolute;
+  top: -.3em;
+  left: -.4em;
+  right: -.4em;
+  bottom: -.8em;
+  z-index: -1;
+  border-style: solid;
+  border-radius: .2em;
+  border-width: .25em .35em .75em .35em;
+  background: #ddd;
+  border-color: #ddd #aaa #888 #bbb;
+  box-shadow: 0 0.15em 0.2em;
+}
+
+.keyboard__key:active {
+  margin-top: .7em;
+  margin-bottom: .6em;
+}
+
+.keyboard__key:active::before {
+  box-shadow: 0 0.1em 0.1em;
+}
+
+.keyboard__key--wide {
+  width: 12%;
+}
+
+.keyboard__key--extra-wide {
+  width: 36%;
+  max-width: 500px;
+}
+
+.keyboard__key--activatable::after {
+  content: '';
+  top: 10px;
+  right: 10px;
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
+}
+
+.keyboard__key--active::after {
+  background: #08ff00;
+}
+
+.keyboard__key-lightup {
+  background: #23d5ab;
+}
+
+@keyframes lightup {
+  0% {
+    background: radial-gradient(circle at 60% 80%, white 40%, #bbb);
+  }
+  50% {
+    background: #23d5ab;
+  }
+  100% {
+    background: radial-gradient(circle at 60% 80%, white 40%, #bbb);
+  }
+}
+
+@media (max-width: 1280px) {
+  .keyboard__key {
+    padding: -0.7em 0.4em 0.8em 1em;
+  }
 }

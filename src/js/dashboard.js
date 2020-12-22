@@ -5,6 +5,7 @@ import MainGlobal from './mainGlobal';
 import CountryTable from './countryTable';
 import CountryDate from './countryDate';
 import Map from './map';
+import Search from './search';
 
 export default class Dashboard {
     country;
@@ -16,6 +17,8 @@ export default class Dashboard {
     map;
 
     createElement() {
+        const dataService = new DataService('https://api.covid19api.com/summary');
+
         const dashboardWrapper = createElement('div');
         dashboardWrapper.classList.add('dashboard-wrapper');
 
@@ -26,20 +29,21 @@ export default class Dashboard {
         dashboardHeaderTitle.classList.add('dashboard-header__title');
         dashboardHeaderTitle.innerText = 'COVID-19 Dashboard'.toUpperCase();
 
-        const dashboardHeaderSearch = createElement('div');
-        dashboardHeaderSearch.classList.add('dashboard-header__search');
-
         dashboardHeader.append(dashboardHeaderTitle);
-        dashboardHeader.append(dashboardHeaderSearch);
 
         const dashboard = createElement('div');
         dashboard.classList.add('dashboard');
 
-        const dataService = new DataService('https://api.covid19api.com/summary');
-
         (async () => {
             try {
                 await dataService.getContent();
+
+                const search = new Search(
+                    dataService.getCountriesList(),
+                    this,
+                    this.selectCountry,
+                );
+                dashboardHeader.append(search.createElement());
 
                 const checkbox100 = createElement('input');
                 checkbox100.setAttribute('type', 'checkbox');
@@ -65,8 +69,8 @@ export default class Dashboard {
 
                 this.map = new Map(this, this.selectCountry);
 
-                checkbox100.addEventListener('click', () => this.mainTable.check100(checkbox100.checked));
-                checkboxNew.addEventListener('click', () => this.mainTable.checkNew(checkboxNew.checked));
+                checkbox100.addEventListener('click', () => this.mainTable.check100(checkbox100.checked, this.country));
+                checkboxNew.addEventListener('click', () => this.mainTable.checkNew(checkboxNew.checked, this.country));
 
                 const dashboardMain = createElement('div');
                 dashboardMain.classList.add('dashboard-main');

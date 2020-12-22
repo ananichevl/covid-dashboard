@@ -81,14 +81,22 @@ export default class MainTable {
         }
     }
 
-    check100(isChecked100) {
+    check100(isChecked100, country) {
         this.isChecked100 = isChecked100;
-        this.createRows();
+        if (country) {
+            this.showRow(country);
+        } else {
+            this.createRows();
+        }
     }
 
-    checkNew(isCheckedNew) {
+    checkNew(isCheckedNew, country) {
         this.isCheckedNew = isCheckedNew;
-        this.createRows();
+        if (country) {
+            this.showRow(country);
+        } else {
+            this.createRows();
+        }
     }
 
     showRow(country) {
