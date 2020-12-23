@@ -96,9 +96,11 @@ export default class MainTable {
     }
 
     createRows(checked100k, checkedNew) {
+        this.tableBody.innerHTML = '';
         const countriesList = Array.from(this.dataService.getCountriesList());
-        countriesList.sort((a, b) => b.TotalConfirmed - a.TotalConfirmed);
-        console.log(countriesList[0]);
+        const sortParam = MainTable.getSortParam(checked100k, checkedNew);
+        console.log(sortParam);
+        countriesList.sort((a, b) => b[sortParam] - a[sortParam]);
         for (let i = 0; i < countriesList.length; i += 1) {
             const row = this.tableBody.insertRow(i);
             row.addEventListener('click', () => this.selectCountry(countriesList[i]));
@@ -197,5 +199,22 @@ export default class MainTable {
             cellTotalRecoveredAmount.innerHTML = country.TotalRecovered;
             cellTotalDeathsAmount.innerHTML = country.TotalDeaths;
         }
+    }
+
+    static getSortParam(checked100k, checkedNew) {
+        let sortParam;
+        if (checkedNew) {
+            if (checked100k) {
+                sortParam = 'TotalConfirmedNew100';
+            } else {
+                sortParam = 'NewConfirmed';
+            }
+        } else if (checked100k) {
+            sortParam = 'TotalConfirmed100';
+        } else {
+            sortParam = 'TotalConfirmed';
+        }
+
+        return sortParam;
     }
 }

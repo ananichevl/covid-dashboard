@@ -15,14 +15,14 @@ module.exports = {
                 test: /\.(js)$/,
                 exclude: /node_modules/,
                 use: [{
-                    loader: "babel-loader",
+                    loader: 'babel-loader',
                     options: {
                         plugins: [
-                            "@babel/plugin-syntax-dynamic-import",
-                            "@babel/plugin-proposal-class-properties"
+                            '@babel/plugin-syntax-dynamic-import',
+                            '@babel/plugin-proposal-class-properties'
                         ]
                     }
-                }, "eslint-loader"]
+                }, 'eslint-loader']
             },
             {
                 test: /\.(s*)css$/,
@@ -32,8 +32,11 @@ module.exports = {
                     'sass-loader',
                 ]
             }, {
-                test: /\.(wav|png)$/,
-                loader: 'file-loader'
+                test: /\.(wav|png|svg)$/,
+                loader: 'file-loader',
+                options: {
+                    name: 'assets/[hash].[ext]',
+                }
             }
         ]
     },

@@ -44,6 +44,8 @@ export default class CountryTable {
     createRows(checked100k, checkedNew, countryParam) {
         this.tableBody.innerHTML = '';
         const totalCountriesList = Array.from(this.dataService.getCountriesList());
+        const sortParam = CountryTable.getSortParam(checked100k, checkedNew, countryParam);
+        totalCountriesList.sort((a, b) => b[sortParam] - a[sortParam]);
         for (let i = 0; i < totalCountriesList.length; i += 1) {
             const rowTotal = this.tableBody.insertRow(i);
             rowTotal.addEventListener('click', () => this.selectCountry(totalCountriesList[i]));
@@ -137,5 +139,42 @@ export default class CountryTable {
         } else {
             cellCases.innerHTML = country.TotalRecovered;
         }
+    }
+
+    static getSortParam(checked100k, checkedNew, countryParam) {
+        let sortParam;
+        if (checkedNew) {
+            if (checked100k) {
+                if (countryParam === 'cases') {
+                    sortParam = 'TotalConfirmedNew100';
+                } else if (countryParam === 'deaths') {
+                    sortParam = 'TotalDeathsNew100';
+                } else {
+                    sortParam = 'TotalRecoveredNew100';
+                }
+            } else if (countryParam === 'cases') {
+                sortParam = 'NewConfirmed';
+            } else if (countryParam === 'deaths') {
+                sortParam = 'NewDeaths';
+            } else {
+                sortParam = 'NewRecovered';
+            }
+        } else if (checked100k) {
+            if (countryParam === 'cases') {
+                sortParam = 'TotalConfirmed100';
+            } else if (countryParam === 'deaths') {
+                sortParam = 'TotalDeaths100';
+            } else {
+                sortParam = 'TotalRecovered100';
+            }
+        } else if (countryParam === 'cases') {
+            sortParam = 'TotalConfirmed';
+        } else if (countryParam === 'deaths') {
+            sortParam = 'TotalDeaths';
+        } else {
+            sortParam = 'TotalRecovered';
+        }
+
+        return sortParam;
     }
 }

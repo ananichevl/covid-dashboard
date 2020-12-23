@@ -124,7 +124,7 @@ export default class Dashboard {
 
                 const mapWrapper = createElement('div');
                 mapWrapper.classList.add('map-wrapper');
-                mapWrapper.append(Map.createElement());
+                mapWrapper.append(this.map.createElement());
 
                 const mapButtonWrapper = createElement('div');
                 mapButtonWrapper.classList.add('button-wrapper');
