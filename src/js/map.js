@@ -1,7 +1,14 @@
 import createElement from './domElementFactory';
 import 'leaflet/dist/leaflet.css';
+import legendIconFile from '../assets/legend.svg';
+import closeIconFile from '../assets/close.svg';
 
 const L = require('leaflet');
+
+const new100Arr = [100, 80, 60, 40, 20, 10];
+const newArr = [150000, 50000, 10000, 5000, 1000, 500];
+const totalArr = [1000000, 500000, 100000, 50000, 10000, 1000];
+const total100Arr = [5000, 4000, 3000, 2000, 1000, 500];
 
 export default class Map {
     dataService;
@@ -12,15 +19,38 @@ export default class Map {
 
     currentMarkers = [];
 
+    legend;
+
+    checkedNew;
+
+    checked100k;
+
+    markerColor;
+
     constructor(dataService, dashboard, selectCountry) {
         this.dataService = dataService;
         this.selectCountry = selectCountry.bind(dashboard);
     }
 
-    static createElement() {
+    createElement() {
         const map = createElement('div');
         map.classList.add('map');
         map.id = 'mapid';
+
+        const legendIcon = createElement('img');
+        legendIcon.classList.add('map__legend-icon');
+        legendIcon.src = legendIconFile;
+
+        this.legend = createElement('div');
+        this.legend.classList.add('map__legend');
+
+        map.append(legendIcon);
+        map.append(this.legend);
+
+        legendIcon.addEventListener('click', () => {
+            this.legend.style.visibility = 'visible';
+            this.createLegend();
+        });
 
         return map;
     }
@@ -48,6 +78,8 @@ export default class Map {
     }
 
     createMarkers(checked100k, checkedNew, mapParam) {
+        this.checkedNew = checkedNew;
+        this.checked100k = checked100k;
         this.removeMarkers();
 
         const countries = Array.from(this.dataService.getCountriesList());
@@ -110,19 +142,17 @@ export default class Map {
                 thirdParam = c.TotalRecovered;
             }
 
-            let color;
-
             if (mapParam === 'cases') {
-                color = '#0E83C4';
+                this.markerColor = '#0E83C4';
             } else if (mapParam === 'deaths') {
-                color = '#FFFFFF';
+                this.markerColor = '#FFFFFF';
             } else {
-                color = '#12E200';
+                this.markerColor = '#12E200';
             }
 
             const marker = L.circle([c.latitude, c.longitude], {
-                color,
-                fillColor: color,
+                color: this.markerColor,
+                fillColor: this.markerColor,
                 fillOpacity: 0.85,
                 radius: Map.getRadius(
                     mainParam,
@@ -156,6 +186,10 @@ export default class Map {
 
             this.currentMarkers.push(marker);
         });
+
+        if (this.legend.style.visibility === 'visible') {
+            this.createLegend();
+        }
     }
 
     removeMarkers() {
@@ -173,47 +207,112 @@ export default class Map {
         }, 5);
     }
 
+    createLegend() {
+        this.legend.innerHTML = '';
+        const button = createElement('button');
+        button.classList.add('button-close');
+        const closeIcon = createElement('img');
+        closeIcon.src = closeIconFile;
+        button.append(closeIcon);
+
+        closeIcon.addEventListener('click', () => {
+            this.legend.style.visibility = 'hidden';
+        });
+        const closeRow = createElement('div');
+        closeRow.classList.add('legend-row');
+
+        closeRow.append(button);
+
+        this.legend.append(closeRow);
+
+        let array;
+
+        if (this.checkedNew) {
+            if (this.checked100k) {
+                array = new100Arr;
+            } else {
+                array = total100Arr;
+            }
+        } else if (this.checked100k) {
+            array = newArr;
+        } else {
+            array = totalArr;
+        }
+
+        for (let i = 0; i < array.length; i += 1) {
+            const row = createElement('div');
+            row.classList.add('legend-row');
+            const marker = createElement('div');
+            marker.classList.add('marker');
+            marker.style.width = `${18 - i * 2}px`;
+            marker.style.height = `${18 - i * 2}px`;
+            marker.style.background = this.markerColor;
+            const text = createElement('h10');
+            text.innerText = `> ${array[i]}`;
+
+            row.append(marker);
+            row.append(text);
+
+            this.legend.append(row);
+        }
+
+        const row = createElement('div');
+        row.classList.add('legend-row');
+        const marker = createElement('div');
+        marker.classList.add('marker');
+        marker.style.width = '6px';
+        marker.style.height = '6px';
+        marker.style.background = this.markerColor;
+        const text = createElement('h10');
+        text.innerText = `< ${array[array.length - 1]}`;
+
+        row.append(marker);
+        row.append(text);
+
+        this.legend.append(row);
+    }
+
     static getRadius(cases, checked100k, checkedNew) {
         if (checked100k) {
             if (checkedNew) {
-                if (cases > 100) {
+                if (cases > new100Arr[0]) {
                     return 200000;
                 }
-                if (cases > 80) {
+                if (cases > new100Arr[1]) {
                     return 150000;
                 }
-                if (cases > 60) {
+                if (cases > new100Arr[2]) {
                     return 100000;
                 }
-                if (cases > 40) {
+                if (cases > new100Arr[3]) {
                     return 50000;
                 }
-                if (cases > 20) {
+                if (cases > new100Arr[4]) {
                     return 25000;
                 }
-                if (cases > 10) {
+                if (cases > new100Arr[5]) {
                     return 10000;
                 }
 
                 return 1000;
             }
 
-            if (cases > 5000) {
+            if (cases > total100Arr[0]) {
                 return 200000;
             }
-            if (cases > 4000) {
+            if (cases > total100Arr[1]) {
                 return 150000;
             }
-            if (cases > 3000) {
+            if (cases > total100Arr[2]) {
                 return 100000;
             }
-            if (cases > 2000) {
+            if (cases > total100Arr[3]) {
                 return 50000;
             }
-            if (cases > 1000) {
+            if (cases > total100Arr[4]) {
                 return 25000;
             }
-            if (cases > 500) {
+            if (cases > total100Arr[5]) {
                 return 10000;
             }
 
@@ -221,44 +320,44 @@ export default class Map {
         }
 
         if (checkedNew) {
-            if (cases > 150000) {
+            if (cases > newArr[0]) {
                 return 200000;
             }
-            if (cases > 50000) {
+            if (cases > newArr[1]) {
                 return 150000;
             }
-            if (cases > 10000) {
+            if (cases > newArr[2]) {
                 return 100000;
             }
-            if (cases > 5000) {
+            if (cases > newArr[3]) {
                 return 50000;
             }
-            if (cases > 1000) {
+            if (cases > newArr[4]) {
                 return 25000;
             }
-            if (cases > 500) {
+            if (cases > newArr[5]) {
                 return 10000;
             }
 
             return 1000;
         }
 
-        if (cases > 1000000) {
+        if (cases > totalArr[0]) {
             return 200000;
         }
-        if (cases > 500000) {
+        if (cases > totalArr[1]) {
             return 150000;
         }
-        if (cases > 100000) {
+        if (cases > totalArr[2]) {
             return 100000;
         }
-        if (cases > 50000) {
+        if (cases > totalArr[3]) {
             return 50000;
         }
-        if (cases > 10000) {
+        if (cases > totalArr[4]) {
             return 25000;
         }
-        if (cases > 1000) {
+        if (cases > totalArr[5]) {
             return 10000;
         }
 

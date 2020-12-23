@@ -216,6 +216,58 @@ button:focus {
           width: 36.8rem;
           height: 33.3rem;
           background: $bg-block-color;
+
+          &__legend-icon {
+            position: relative;
+            width: 32px;
+            height: 30px;
+            margin-top: 6px;
+            margin-left: 334px;
+            z-index: 5000;
+          }
+
+          &__legend {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 0;
+            width: 120px;
+            z-index: 5000;
+
+            visibility: hidden;
+            background: #000000;
+
+            .button-close {
+              width: 20px;
+              height: 20px;
+              background: transparent;
+              border: none;
+
+              img {
+                width: 11px;
+                height: 11px;
+              }
+            }
+
+            .legend-row {
+              @include h10;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              padding: 5px 10px;
+              color: #D6D6D6;
+
+              .marker {
+                background: white;
+                border-radius: 100%;
+              }
+            }
+
+            .legend-row:nth-child(1) {
+              justify-content: flex-end;
+              padding: 5px;
+            }
+          }
         }
 
         .button-wrapper {
