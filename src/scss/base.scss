@@ -2,12 +2,13 @@
 
 $bg-color: #191932;
 $bg-block-color: #000000;
-$bg-cases-color: -webkit-linear-gradient(270.15deg, #7D40FF 19.44%, #02A4FF 81.9%);
-$bg-country-color: -webkit-linear-gradient(270deg, #4DFFDF 0%, #4DA1FF 96.35%);
-$bg-recovered-color: -webkit-linear-gradient(91.53deg, #97E200 0.8%, #12E200 107.15%);
+$bg-cases-color: -webkit-linear-gradient(right, #7D40FF 19.44%, #02A4FF 81.9%);
+$bg-country-color: -webkit-linear-gradient(right, #4DFFDF 0%, #4DA1FF 96.35%);
+$bg-recovered-color: -webkit-linear-gradient(left, #97E200 0.8%, #12E200 107.15%);
 $recovered-title-color: #97E200;
 $recovered-color: #70A800;
 $country-color: #D6D6D6;
+$border-color: #5C5C5C;
 
 @mixin h1 {
   font: {
@@ -64,6 +65,41 @@ $country-color: #D6D6D6;
   font-weight: bold;
 }
 
+@mixin h10 {
+  font: {
+    family: Lato;
+    style: normal;
+    weight: normal;
+    size: 14px;
+  }
+  line-height: 16px;
+}
+
+@mixin h11 {
+  font: {
+    family: Lato;
+    style: normal;
+    weight: normal;
+    size: 12px;
+  }
+  line-height: 14px;
+}
+
+@mixin button {
+  @include h11;
+  padding: 4px 14px;
+  margin-right: 6px;
+  background: #000000;
+
+  box-sizing: border-box;
+  border-bottom: 3px solid #363636;
+}
+
+@mixin button-clicked {
+  background: #222222;
+  border-bottom: 3px solid #2493F2;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -72,6 +108,10 @@ $country-color: #D6D6D6;
 body {
   background: $bg-color;
   color: white;
+}
+
+button:focus {
+  outline: none;
 }
 
 .dashboard-wrapper {
@@ -164,10 +204,26 @@ body {
         }
       }
 
-      .map {
-        width: 368px;
-        height: 333px;
-        background: $bg-block-color;
+      .map-wrapper {
+        .map {
+          width: 368px;
+          height: 333px;
+          background: $bg-block-color;
+        }
+
+        .button-wrapper {
+          display: flex;
+          margin-left: 0px;
+
+          .button-cases, .button-deaths, .button-recovered {
+            @include button;
+            width: 94px;
+          }
+
+          .button-clicked {
+            @include button-clicked;
+          }
+        }
       }
     }
 
@@ -179,30 +235,94 @@ body {
       background: $bg-block-color;
     }
 
-     .mainTable {
+    .mainTable {
       @include h5;
-     }
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
 
-     th:nth-child(1) {
-      @include h4;
+      th {
+        padding-top: 20px;
 
-      background: $bg-cases-color;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-     }
+        .button-100k {
+          @include h10;
+          padding: 0 5px;
 
-     th:nth-child(2) {
-      @include h4;
-     }
+          background: transparent;
+          color: rgba(255, 255, 255, 0.6);
 
-     th:nth-child(3) {
-      @include h4;
+          border: 1px solid rgba(255, 255, 255, 0.6);
+          box-sizing: border-box;
+          border-radius: 4px;
+        }
 
-      background: $bg-recovered-color;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-     }
+        .button-100k-pressed {
+          color: rgba(18, 226, 0, 0.6);
+          border: 1px solid rgba(18, 226, 0, 0.6);
+        }
+      }
 
+      th:nth-child(1) {
+        border-right: 1px solid $border-color;
+
+        h4 {
+          @include h4;
+        }
+
+        h3 {
+          @include h3;
+          background: $bg-cases-color;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+      }
+
+      th:nth-child(2) {
+        border-right: 1px solid $border-color;
+
+        h4 {
+          @include h4;
+        }
+
+        h3 {
+          @include h3;
+        }
+      }
+
+      th:nth-child(3) {
+        h4 {
+          @include h4;
+        }
+
+        h3 {
+          @include h3;
+          background: $bg-recovered-color;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+      }
+
+      td {
+        border-bottom: 1px solid $border-color;
+      }
+
+      td:nth-child(1), td:nth-child(2) {
+        border-right: 1px solid $border-color;
+      }
+    }
+
+    .button-wrapper {
+      display: flex;
+      margin-left: 22px;
+
+      .total-button, .new-button {
+        @include button;
+      }
+
+      .button-clicked {
+        @include button-clicked;
+      }
+    }
   }
 
   .dashboard-country {
@@ -242,7 +362,7 @@ body {
       };
       background: $bg-block-color;
       border-collapse: collapse;
-      
+
       table {
         border-spacing: 0;
         padding: 10px;
@@ -256,10 +376,10 @@ body {
         @include h5;
       }
 
-      td.countryInfo  {
+      td.countryInfo {
         background: $bg-country-color;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
         color: $bg-country-color;
         height: 34px;
         @include h5-bold;
@@ -268,6 +388,19 @@ body {
       tr {
         border: 1px solid #5C5C5C;
       }
+    }
+
+    .button-wrapper {
+      display: flex;
+    }
+
+    .button-cases, .button-deaths, .button-recovered {
+      @include button;
+      width: 94px;
+    }
+
+    .button-clicked {
+      @include button-clicked;
     }
   }
 }

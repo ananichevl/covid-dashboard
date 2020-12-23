@@ -5,17 +5,14 @@ export default class CountryTable {
 
     dataService;
 
-    isChecked100;
-
     isCheckedNew;
 
     tableBody;
 
     selectCountry;
 
-    constructor(dataService, isChecked100, isCheckedNew, dashboard, selectCountry) {
+    constructor(dataService, isCheckedNew, dashboard, selectCountry) {
         this.dataService = dataService;
-        this.isChecked100 = isChecked100;
         this.isCheckedNew = isCheckedNew;
         this.selectCountry = selectCountry.bind(dashboard);
     }
@@ -44,10 +41,9 @@ export default class CountryTable {
         this.createRows();
     }
 
-    createRows() {
+    createRows(checked100k, checkedNew, countryParam) {
         this.tableBody.innerHTML = '';
-        const totalCountriesList = this.dataService.getCountriesList();
-        console.log(totalCountriesList);
+        const totalCountriesList = Array.from(this.dataService.getCountriesList());
         for (let i = 0; i < totalCountriesList.length; i += 1) {
             const rowTotal = this.tableBody.insertRow(i);
             rowTotal.addEventListener('click', () => this.selectCountry(totalCountriesList[i]));
@@ -58,14 +54,44 @@ export default class CountryTable {
             countryFlag.append(imageCountryFlag);
             const cellCountryTotal = rowTotal.insertCell(1);
             cellCountryTotal.classList.add('countryName');
-            const cellTotalCountriesCases = rowTotal.insertCell(2);
-            cellTotalCountriesCases.classList.add('countryInfo');
+            const cellCases = rowTotal.insertCell(2);
+            cellCases.classList.add('countryInfo');
             cellCountryTotal.innerHTML = totalCountriesList[i].Country;
-            cellTotalCountriesCases.innerHTML = totalCountriesList[i].TotalConfirmed;
+            if (checkedNew) {
+                if (checked100k) {
+                    if (countryParam === 'cases') {
+                        cellCases.innerHTML = totalCountriesList[i].TotalConfirmedNew100;
+                    } else if (countryParam === 'deaths') {
+                        cellCases.innerHTML = totalCountriesList[i].TotalDeathsNew100;
+                    } else {
+                        cellCases.innerHTML = totalCountriesList[i].TotalRecoveredNew100;
+                    }
+                } else if (countryParam === 'cases') {
+                    cellCases.innerHTML = totalCountriesList[i].NewConfirmed;
+                } else if (countryParam === 'deaths') {
+                    cellCases.innerHTML = totalCountriesList[i].NewDeaths;
+                } else {
+                    cellCases.innerHTML = totalCountriesList[i].NewRecovered;
+                }
+            } else if (checked100k) {
+                if (countryParam === 'cases') {
+                    cellCases.innerHTML = totalCountriesList[i].TotalConfirmed100;
+                } else if (countryParam === 'deaths') {
+                    cellCases.innerHTML = totalCountriesList[i].TotalDeaths100;
+                } else {
+                    cellCases.innerHTML = totalCountriesList[i].TotalRecovered100;
+                }
+            } else if (countryParam === 'cases') {
+                cellCases.innerHTML = totalCountriesList[i].TotalConfirmed;
+            } else if (countryParam === 'deaths') {
+                cellCases.innerHTML = totalCountriesList[i].TotalDeaths;
+            } else {
+                cellCases.innerHTML = totalCountriesList[i].TotalRecovered;
+            }
         }
     }
 
-    showRow(country) {
+    showRow(country, checked100k, checkedNew, countryParam) {
         this.tableBody.innerHTML = '';
         const row = this.tableBody.insertRow();
         row.addEventListener('click', () => this.selectCountry(country));
@@ -76,9 +102,40 @@ export default class CountryTable {
         countryFlag.append(imageCountryFlag);
         const cellCountryTotal = row.insertCell(1);
         cellCountryTotal.classList.add('countryName');
-        const cellTotalCountriesCases = row.insertCell(2);
-        cellTotalCountriesCases.classList.add('countryInfo');
+        const cellCases = row.insertCell(2);
+        cellCases.classList.add('countryInfo');
         cellCountryTotal.innerHTML = country.Country;
-        cellTotalCountriesCases.innerHTML = country.TotalConfirmed;
+
+        if (checkedNew) {
+            if (checked100k) {
+                if (countryParam === 'cases') {
+                    cellCases.innerHTML = country.TotalConfirmedNew100;
+                } else if (countryParam === 'deaths') {
+                    cellCases.innerHTML = country.TotalDeathsNew100;
+                } else {
+                    cellCases.innerHTML = country.TotalRecoveredNew100;
+                }
+            } else if (countryParam === 'cases') {
+                cellCases.innerHTML = country.NewConfirmed;
+            } else if (countryParam === 'deaths') {
+                cellCases.innerHTML = country.NewDeaths;
+            } else {
+                cellCases.innerHTML = country.NewRecovered;
+            }
+        } else if (checked100k) {
+            if (countryParam === 'cases') {
+                cellCases.innerHTML = country.TotalConfirmed100;
+            } else if (countryParam === 'deaths') {
+                cellCases.innerHTML = country.TotalDeaths100;
+            } else {
+                cellCases.innerHTML = country.TotalRecovered100;
+            }
+        } else if (countryParam === 'cases') {
+            cellCases.innerHTML = country.TotalConfirmed;
+        } else if (countryParam === 'deaths') {
+            cellCases.innerHTML = country.TotalDeaths;
+        } else {
+            cellCases.innerHTML = country.TotalRecovered;
+        }
     }
 }

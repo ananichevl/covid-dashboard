@@ -1,3 +1,11 @@
+import backspaceSound from '../assets/scissors.wav';
+import capsSound from '../assets/caps.wav';
+import enterSound from '../assets/boom.wav';
+import spaceSound from '../assets/space.wav';
+import shiftSound from '../assets/shift.wav';
+import sound from '../assets/keyboard.wav';
+import ruSound from '../assets/ru_keyboard.wav';
+
 const digitSymbols = {
     1: '!',
     2: '@',
@@ -63,6 +71,14 @@ const alphabetSymbols = {
     '>': 'Ю',
 };
 
+const audioBackspace = new Audio(backspaceSound);
+const audioCaps = new Audio(capsSound);
+const audioEnter = new Audio(enterSound);
+const audioSpace = new Audio(spaceSound);
+const audioShift = new Audio(shiftSound);
+const audio = new Audio(sound);
+const audioRu = new Audio(ruSound);
+
 export default class Keyboard {
     elements = {
         main: null,
@@ -103,14 +119,6 @@ export default class Keyboard {
     }
 
     createKeys() {
-        const audio = document.createElement('audio');
-        audio.src = 'assets/sounds/keyboard.wav';
-        document.body.appendChild(audio);
-
-        const audioRu = document.createElement('audio');
-        audioRu.src = 'assets/sounds/ru_keyboard.wav';
-        document.body.appendChild(audio);
-
         const fragment = document.createDocumentFragment();
         const keyLayout = [
             'sound', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'backspace',
@@ -126,19 +134,10 @@ export default class Keyboard {
             const keyElement = document.createElement('span');
             const insertLineBreak = ['backspace', ']', 'enter', 'done'].indexOf(key) !== -1;
 
-            // Add attributes/classes
             keyElement.classList.add('keyboard__key');
-            const audioBackspace = document.createElement('audio');
-            const audioCaps = document.createElement('audio');
-            const audioEnter = document.createElement('audio');
-            const audioSpace = document.createElement('audio');
-            const audioShift = document.createElement('audio');
 
             switch (key) {
             case 'backspace':
-                audioBackspace.src = 'assets/sounds/scissors.wav';
-                document.body.appendChild(audioBackspace);
-
                 keyElement.classList.add('keyboard__key--wide');
                 keyElement.innerHTML = createIconHTML('backspace');
 
@@ -158,9 +157,6 @@ export default class Keyboard {
                 });
                 break;
             case 'caps':
-                audioCaps.src = 'assets/sounds/caps.wav';
-                document.body.appendChild(audioCaps);
-
                 keyElement.classList.add('keyboard__key--wide', 'keyboard__key--activatable');
 
                 keyElement.addEventListener('click', () => {
@@ -189,9 +185,6 @@ export default class Keyboard {
                 break;
 
             case 'enter':
-                audioEnter.src = 'assets/sounds/boom.wav';
-                document.body.appendChild(audioEnter);
-
                 keyElement.classList.add('keyboard__key--wide');
                 keyElement.addEventListener('click', () => {
                     if (this.sound) {
@@ -210,9 +203,6 @@ export default class Keyboard {
                 break;
 
             case 'space':
-                audioSpace.src = 'assets/sounds/space.wav';
-                document.body.appendChild(audioSpace);
-
                 keyElement.classList.add('keyboard__key--extra-wide');
                 keyElement.addEventListener('click', () => {
                     if (this.sound) {
@@ -237,9 +227,6 @@ export default class Keyboard {
                 });
                 break;
             case 'shift':
-                audioShift.src = 'assets/sounds/shift.wav';
-                document.body.appendChild(audioShift);
-
                 keyElement.classList.add('keyboard__key--wide', 'keyboard__key--activatable');
                 keyElement.addEventListener('click', () => {
                     if (this.sound) {
@@ -295,7 +282,7 @@ export default class Keyboard {
                             }
 
                             if (key.match('[a-zA-Z]')) {
-                                const addition = (this.capsLock ? !this.shift : !this.shift)
+                                const addition = (this.capsLock ? !this.shift : this.shift)
                                     ? key.toUpperCase()
                                     : key.toLowerCase();
                                 this.input = [this.input.slice(0, position), addition, this.input.slice(position)].join('');
@@ -311,7 +298,7 @@ export default class Keyboard {
                                 setTimeout(() => audioRu.pause(), 350);
                             }
 
-                            const addition = (this.capsLock ? !this.shift : !this.shift)
+                            const addition = (this.capsLock ? !this.shift : this.shift)
                                 ? alphabetSymbols[key.toLowerCase()].toUpperCase()
                                 : alphabetSymbols[key.toLowerCase()].toLowerCase();
                             this.input = [this.input.slice(0, position), addition, this.input.slice(position)].join('');
@@ -358,7 +345,7 @@ export default class Keyboard {
         this.capsLock = !this.capsLock;
         for (let i = 0; i < this.elements.keys.length; i += 1) {
             if (this.elements.keys[i].textContent.match('[a-zA-Zа-яА-ЯёЁ]') && this.elements.keys[i].textContent.length === 1) {
-                this.elements.keys[i].textContent = (this.capsLock ? !this.shift : !this.shift)
+                this.elements.keys[i].textContent = (this.capsLock ? !this.shift : this.shift)
                     ? this.elements.keys[i].textContent.toUpperCase()
                     : this.elements.keys[i].textContent.toLowerCase();
             }
@@ -374,7 +361,7 @@ export default class Keyboard {
 
         for (let i = 0; i < this.elements.keys.length; i += 1) {
             if (this.elements.keys[i].textContent.match('[a-zA-Zа-яА-ЯёЁ]') && this.elements.keys[i].textContent.length === 1) {
-                this.elements.keys[i].textContent = (this.capsLock ? !this.shift : !this.shift)
+                this.elements.keys[i].textContent = (this.capsLock ? !this.shift : this.shift)
                     ? this.elements.keys[i].textContent.toUpperCase()
                     : this.elements.keys[i].textContent.toLowerCase();
             }
@@ -406,13 +393,13 @@ export default class Keyboard {
                 .forEach((entry) => {
                     if (entry[0] === this.elements.keys[i].textContent.toLowerCase()) {
                         this.elements.keys[i].textContent = (
-                            this.capsLock ? !this.shift : !this.shift
+                            this.capsLock ? !this.shift : this.shift
                         )
                             ? entry[1].toUpperCase()
                             : entry[1].toLowerCase();
                     } else if (entry[1] === this.elements.keys[i].textContent.toLowerCase()) {
                         this.elements.keys[i].textContent = (
-                            this.capsLock ? !this.shift : !this.shift
+                            this.capsLock ? !this.shift : this.shift
                         )
                             ? entry[0].toUpperCase()
                             : entry[0].toLowerCase();

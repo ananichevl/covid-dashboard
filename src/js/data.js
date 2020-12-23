@@ -24,6 +24,9 @@ export default class DataService {
         try {
             response = await fetch(this.url);
             this.content = await response.json();
+            if (!this.content.Countries) {
+                this.content = summary;
+            }
         } catch (error) {
             this.content = summary;
         }

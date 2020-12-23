@@ -3,21 +3,18 @@ import createElement from './domElementFactory';
 export default class MainTable {
     dataService;
 
-    isChecked100;
-
-    isCheckedNew;
-
     tableCountries;
 
     tableBody;
 
     selectCountry;
 
-    constructor(dataService, isChecked100, isCheckedNew, dashboard, selectCountry) {
+    handle100k;
+
+    constructor(dataService, dashboard, selectCountry, handle100k) {
         this.dataService = dataService;
-        this.isChecked100 = isChecked100;
-        this.isCheckedNew = isCheckedNew;
         this.selectCountry = selectCountry.bind(dashboard);
+        this.handle100k = handle100k.bind(dashboard);
     }
 
     createElement() {
@@ -35,28 +32,61 @@ export default class MainTable {
         const headerRow = tableHeader.insertRow();
         const totalCasesHeader = createElement('th');
         totalCasesHeader.classList.add('totalCasesHeader');
-        const headerCasesText = createElement('span');
+        const headerCasesText = createElement('h4');
         headerCasesText.innerText = 'Total Cases';
         totalCasesHeader.append(headerCasesText);
-        const headerCasesAmount = createElement('p');
+        const headerCasesAmount = createElement('h3');
         headerCasesAmount.innerText = this.dataService.getTotalCases();
         totalCasesHeader.append(headerCasesAmount);
+        const button100kTC = document.createElement('button');
+        button100kTC.classList.add('button-100k');
+        button100kTC.innerText = '100k';
+        totalCasesHeader.append(button100kTC);
         const totalDeathsHeader = createElement('th');
         totalDeathsHeader.classList.add('totalDeathsHeader');
-        const headerDeathsText = createElement('span');
+        const headerDeathsText = createElement('h4');
         headerDeathsText.innerText = 'Total Deaths';
         totalDeathsHeader.append(headerDeathsText);
-        const headerDeathsAmount = createElement('p');
+        const headerDeathsAmount = createElement('h3');
         headerDeathsAmount.innerText = this.dataService.getTotalDeaths();
         totalDeathsHeader.append(headerDeathsAmount);
+        const button100kTD = document.createElement('button');
+        button100kTD.classList.add('button-100k');
+        button100kTD.innerText = '100k';
+        totalDeathsHeader.append(button100kTD);
         const totalRecoveredHeader = createElement('th');
         totalRecoveredHeader.classList.add('totalRecoveredHeader');
-        const headerRecoveredText = createElement('span');
+        const headerRecoveredText = createElement('h4');
         headerRecoveredText.innerText = 'Total Recovered';
         totalRecoveredHeader.append(headerRecoveredText);
-        const headerRecoveredAmount = createElement('p');
+        const headerRecoveredAmount = createElement('h3');
         headerRecoveredAmount.innerText = this.dataService.getTotalRecovered();
         totalRecoveredHeader.append(headerRecoveredAmount);
+        const button100kTR = document.createElement('button');
+        button100kTR.classList.add('button-100k');
+        button100kTR.innerText = '100k';
+        totalRecoveredHeader.append(button100kTR);
+
+        button100kTC.addEventListener('click', () => {
+            this.handle100kClick();
+            button100kTC.classList.toggle('button-100k-pressed');
+            button100kTD.classList.toggle('button-100k-pressed');
+            button100kTR.classList.toggle('button-100k-pressed');
+        });
+
+        button100kTD.addEventListener('click', () => {
+            this.handle100kClick();
+            button100kTC.classList.toggle('button-100k-pressed');
+            button100kTD.classList.toggle('button-100k-pressed');
+            button100kTR.classList.toggle('button-100k-pressed');
+        });
+
+        button100kTR.addEventListener('click', () => {
+            this.handle100kClick();
+            button100kTC.classList.toggle('button-100k-pressed');
+            button100kTD.classList.toggle('button-100k-pressed');
+            button100kTR.classList.toggle('button-100k-pressed');
+        });
 
         headerRow.append(totalCasesHeader);
         headerRow.append(totalDeathsHeader);
@@ -65,27 +95,33 @@ export default class MainTable {
         this.createRows();
     }
 
-    createRows() {
-        const countriesList = this.dataService.getCountriesList();
+    createRows(checked100k, checkedNew) {
+        const countriesList = Array.from(this.dataService.getCountriesList());
+        countriesList.sort((a, b) => b.TotalConfirmed - a.TotalConfirmed);
+        console.log(countriesList[0]);
         for (let i = 0; i < countriesList.length; i += 1) {
             const row = this.tableBody.insertRow(i);
             row.addEventListener('click', () => this.selectCountry(countriesList[i]));
             const cellTotalCases = row.insertCell(0);
             const cellTotalCasesAmount = createElement('p');
-            const cellCountry = createElement('span');
-            cellCountry.innerHTML = countriesList[i].Country;
+            const cellCountryTC = createElement('span');
+            cellCountryTC.innerHTML = countriesList[i].Country;
             cellTotalCases.append(cellTotalCasesAmount);
-            cellTotalCases.append(cellCountry);
+            cellTotalCases.append(cellCountryTC);
             const cellTotalDeaths = row.insertCell(1);
             const cellTotalDeathsAmount = createElement('p');
+            const cellCountryTD = createElement('span');
+            cellCountryTD.innerHTML = countriesList[i].Country;
             cellTotalDeaths.append(cellTotalDeathsAmount);
-            cellTotalDeaths.append(cellCountry);
+            cellTotalDeaths.append(cellCountryTD);
             const cellTotalRecovered = row.insertCell(2);
             const cellTotalRecoveredAmount = createElement('p');
+            const cellCountryTR = createElement('span');
+            cellCountryTR.innerHTML = countriesList[i].Country;
             cellTotalRecovered.append(cellTotalRecoveredAmount);
-            cellTotalRecovered.append(cellCountry);
-            if (this.isCheckedNew) {
-                if (this.isChecked100) {
+            cellTotalRecovered.append(cellCountryTR);
+            if (checkedNew) {
+                if (checked100k) {
                     cellTotalCasesAmount.innerHTML = countriesList[i].TotalConfirmedNew100;
                     cellTotalRecoveredAmount.innerHTML = countriesList[i].TotalRecoveredNew100;
                     cellTotalDeathsAmount.innerHTML = countriesList[i].TotalDeathsNew100;
@@ -94,7 +130,7 @@ export default class MainTable {
                     cellTotalRecoveredAmount.innerHTML = countriesList[i].NewRecovered;
                     cellTotalDeathsAmount.innerHTML = countriesList[i].NewDeaths;
                 }
-            } else if (this.isChecked100) {
+            } else if (checked100k) {
                 cellTotalCasesAmount.innerHTML = countriesList[i].TotalConfirmed100;
                 cellTotalRecoveredAmount.innerHTML = countriesList[i].TotalRecovered100;
                 cellTotalDeathsAmount.innerHTML = countriesList[i].TotalDeaths100;
@@ -106,13 +142,8 @@ export default class MainTable {
         }
     }
 
-    check100(isChecked100, country) {
-        this.isChecked100 = isChecked100;
-        if (country) {
-            this.showRow(country);
-        } else {
-            this.createRows();
-        }
+    handle100kClick() {
+        this.handle100k();
     }
 
     checkNew(isCheckedNew, country) {
@@ -124,35 +155,47 @@ export default class MainTable {
         }
     }
 
-    showRow(country) {
+    showRow(country, checked100k, checkedNew) {
         this.tableBody.innerHTML = '';
         const row = this.tableBody.insertRow();
         row.addEventListener('click', () => this.selectCountry(country));
-
-        // const cellCountry = row.insertCell(0);
         const cellTotalCases = row.insertCell(0);
+        const cellTotalCasesAmount = createElement('p');
+        const cellCountryTC = createElement('span');
+        cellCountryTC.innerHTML = country.Country;
+        cellTotalCases.append(cellTotalCasesAmount);
+        cellTotalCases.append(cellCountryTC);
         const cellTotalDeaths = row.insertCell(1);
+        const cellTotalDeathsAmount = createElement('p');
+        const cellCountryTD = createElement('span');
+        cellCountryTD.innerHTML = country.Country;
+        cellTotalDeaths.append(cellTotalDeathsAmount);
+        cellTotalDeaths.append(cellCountryTD);
         const cellTotalRecovered = row.insertCell(2);
-        // cellCountry.innerHTML = country.Country;
+        const cellTotalRecoveredAmount = createElement('p');
+        const cellCountryTR = createElement('span');
+        cellCountryTR.innerHTML = country.Country;
+        cellTotalRecovered.append(cellTotalRecoveredAmount);
+        cellTotalRecovered.append(cellCountryTR);
 
-        if (this.isCheckedNew) {
-            if (this.isChecked100) {
-                cellTotalCases.innerHTML = country.TotalConfirmedNew100;
-                cellTotalRecovered.innerHTML = country.TotalRecoveredNew100;
-                cellTotalDeaths.innerHTML = country.TotalDeathsNew100;
+        if (checkedNew) {
+            if (checked100k) {
+                cellTotalCasesAmount.innerHTML = country.TotalConfirmedNew100;
+                cellTotalRecoveredAmount.innerHTML = country.TotalRecoveredNew100;
+                cellTotalDeathsAmount.innerHTML = country.TotalDeathsNew100;
             } else {
-                cellTotalCases.innerHTML = country.NewConfirmed;
-                cellTotalRecovered.innerHTML = country.NewRecovered;
-                cellTotalDeaths.innerHTML = country.NewDeaths;
+                cellTotalCasesAmount.innerHTML = country.NewConfirmed;
+                cellTotalRecoveredAmount.innerHTML = country.NewRecovered;
+                cellTotalDeathsAmount.innerHTML = country.NewDeaths;
             }
-        } else if (this.isChecked100) {
-            cellTotalCases.innerHTML = country.TotalConfirmed100;
-            cellTotalRecovered.innerHTML = country.TotalRecovered100;
-            cellTotalDeaths.innerHTML = country.TotalDeaths100;
+        } else if (checked100k) {
+            cellTotalCasesAmount.innerHTML = country.TotalConfirmed100;
+            cellTotalRecoveredAmount.innerHTML = country.TotalRecovered100;
+            cellTotalDeathsAmount.innerHTML = country.TotalDeaths100;
         } else {
-            cellTotalCases.innerHTML = country.TotalConfirmed;
-            cellTotalRecovered.innerHTML = country.TotalRecovered;
-            cellTotalDeaths.innerHTML = country.TotalDeaths;
+            cellTotalCasesAmount.innerHTML = country.TotalConfirmed;
+            cellTotalRecoveredAmount.innerHTML = country.TotalRecovered;
+            cellTotalDeathsAmount.innerHTML = country.TotalDeaths;
         }
     }
 }

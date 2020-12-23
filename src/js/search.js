@@ -12,8 +12,8 @@ export default class Search {
 
     keyboard;
 
-    constructor(countries, dashboard, selectCountry) {
-        this.countries = countries;
+    constructor(dataService, dashboard, selectCountry) {
+        this.countries = dataService.getCountriesList();
         this.selectCountry = selectCountry.bind(dashboard);
     }
 
@@ -60,6 +60,7 @@ export default class Search {
 
     handleListClick(country) {
         this.input.value = country.Country;
+        console.log(country);
         this.selectCountry(country);
     }
 
@@ -67,7 +68,6 @@ export default class Search {
         for (let i = 0; i < this.searchListUl.childNodes.length; i += 1) {
             this.searchListUl.childNodes[i].style.display = 'none';
         }
-        this.keyboard.close();
     }
 
     filterList() {
