@@ -187,7 +187,7 @@ button:focus {
           padding: 1.1rem 1.6rem 1.3rem 1.6rem;
 
           background: $bg-block-color;
-          
+
           span {
             display: block;
           }
@@ -250,6 +250,10 @@ button:focus {
               }
             }
 
+            .button-close:hover {
+              cursor: pointer;
+            }
+
             .legend-row {
               @include h10;
               display: flex;
@@ -278,6 +282,10 @@ button:focus {
           .button-cases, .button-deaths, .button-recovered {
             @include button;
             width: 9.4rem;
+          }
+
+          .button-cases:hover, .button-deaths:hover, .button-recovered:hover {
+            cursor: pointer;
           }
 
           .button-clicked {
@@ -315,6 +323,10 @@ button:focus {
           border: 1px solid rgba(255, 255, 255, 0.6);
           box-sizing: border-box;
           border-radius: 4px;
+        }
+
+        .button-100k:hover {
+          cursor: pointer;
         }
 
         .button-100k-pressed {
@@ -382,6 +394,10 @@ button:focus {
 
       .total-button, .new-button {
         @include button;
+      }
+
+      .total-button:hover, .new-button:hover {
+        cursor: pointer;
       }
 
       .button-clicked {
@@ -468,6 +484,10 @@ button:focus {
     .button-cases, .button-deaths, .button-recovered {
       @include button;
       width: 9.4rem;
+    }
+
+    .button-cases:hover, .button-deaths:hover, .button-recovered:hover {
+      cursor: pointer;
     }
 
     .button-clicked {
